@@ -3,21 +3,21 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Reconocimiento de emociones por el habla usando doble análisis de Fourier</title>
+<title>Reconocimiento de emociones en el espectro — doble análisis de Fourier</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Serif:ital,wght@0,400;0,500;1,400&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --ink:#FFF5F7; /* Fondo principal rosa pastel muy suave */
-    --panel:#FFE4EB; /* Paneles rosa suave */
-    --panel-alt:#ffd5e0; /* Variación de panel un poco más intensa */
-    --line:rgba(212, 143, 161, 0.3); /* Líneas divisorias sutiles */
-    --fog:#6B5358; /* Texto secundario en tono café/rosa viejo oscuro */
-    --paper:#3A2428; /* Texto principal oscuro para buen contraste */
-    --teal:#D6336C; /* Acento principal: Rosa intenso/Fucsia elegante */
+    --ink:#FFF5F7; 
+    --panel:#FFE4EB; 
+    --panel-alt:#ffd5e0; 
+    --line:rgba(212, 143, 161, 0.3); 
+    --fog:#6B5358; 
+    --paper:#3A2428; 
+    --teal:#D6336C; 
     --teal-dim:#A61E4D;
-    --amber:#9C36B5; /* Acento secundario: Lila/Morado suave */
+    --amber:#9C36B5; 
     --amber-dim:#7048E8;
     --font-display:'Space Grotesk',sans-serif;
     --font-body:'IBM Plex Serif',serif;
@@ -87,8 +87,25 @@
   .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px;}
   .card h3{font-size:16px;margin:0 0 4px;font-weight:600;color:var(--paper);}
   .card .sub{font-size:11px;color:var(--fog);margin:0 0 14px;font-family:var(--font-mono);}
+  
+  /* ---- NUEVOS ESTILOS PARA EFECTO HUNDIR ---- */
   .shots{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-  .shot{position:relative;aspect-ratio:4/3;background:var(--panel-alt);border:1px dashed var(--line);border-radius:8px;overflow:hidden;}
+  .shot{
+    position:relative;
+    aspect-ratio:4/3;
+    background:var(--panel-alt);
+    border:1px dashed var(--line);
+    border-radius:8px;
+    overflow:hidden;
+    cursor:pointer;
+    transition: transform 0.1s ease, box-shadow 0.1s ease;
+  }
+  .shot:hover {
+    filter: brightness(0.95);
+  }
+  .shot:active {
+    transform: scale(0.95); /* Efecto de hundirse */
+  }
   .shot img{width:100%;height:100%;object-fit:contain;display:none;}
   .shot.loaded img{display:block;}
   .shot.loaded .shot-fallback{display:none;}
@@ -115,6 +132,47 @@
   .readout-row .fill{height:100%;background:var(--teal);}
   .readout-row .val{font-family:var(--font-mono);font-size:12px;color:var(--paper);text-align:right;}
   .edit-note{font-size:12px;color:var(--amber);margin-top:14px;}
+
+  /* ---- NUEVOS ESTILOS PARA EL MODAL (PANTALLA GRANDE) ---- */
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(58, 36, 40, 0.9); /* Fondo oscuro usando tu color café base */
+    backdrop-filter: blur(8px);
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  .modal.open {
+    display: flex;
+    opacity: 1;
+  }
+  .modal-content {
+    max-width: 90vw;
+    max-height: 85vh;
+    border-radius: 12px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    transform: scale(0.9);
+    transition: transform 0.3s ease;
+    background: var(--ink);
+    padding: 10px;
+  }
+  .modal.open .modal-content {
+    transform: scale(1);
+  }
+  .modal-close {
+    position: absolute;
+    top: 20px; right: 25px;
+    font-size: 35px;
+    color: white;
+    cursor: pointer;
+    font-family: sans-serif;
+    user-select: none;
+  }
 
   footer{padding:36px 0;text-align:center;border-top:1px solid var(--line);}
   footer p{font-size:12px;color:var(--fog);margin:0;}
@@ -144,10 +202,10 @@
     </g>
   </svg>
   <div class="wrap hero-inner">
-    <p class="eyebrow">Física Experimental 3 </p>
-    <h1>Reconocimiento de emociones por el habla usando doble análisis de Fourier</h1>
+    <p class="eyebrow">Física Experimental 3 · UdeA</p>
+    <h1>Reconociendo emociones en el espectro de la voz</h1>
     <p class="lede">Doble análisis de Fourier sobre espectrogramas de voz: STFT, binarización de Otsu, FFT-2D y correlación de Pearson entre perfiles verticales.</p>
-    <p class="lede">Aquí comparamos lo obtenido con el dataset alemán frente al paper guía, y mostramos nuestros resultados propios con el dataset italiano (EMOVO).</p>
+    <p class="lede">Aquí comparamos lo obtenido con el dataset alemán frente al paper original, y mostramos los resultados propios con el dataset italiano (EMOVO).</p>
     <p class="scroll-cue">↓ desliza para ver la metodología y los espectros</p>
   </div>
 </section>
@@ -170,7 +228,7 @@
   <div class="wrap">
     <p class="eyebrow">Comparación</p>
     <h2>Alemán (EMO-DB) frente al paper</h2>
-    <p style="color:var(--fog);max-width:640px;">Espectro obtenido por nosotras con EMO-DB contra el reportado en el paper de referencia, para cada emoción.</p>
+    <p style="color:var(--fog);max-width:640px;">Espectro obtenido por nosotros con EMO-DB contra el reportado en el paper de referencia, para cada emoción.</p>
     <div class="legend">
       <span><i class="dot amber"></i>Paper (Sierra-Sosa et al.)</span>
       <span><i class="dot teal"></i>Nuestro resultado (EMO-DB)</span>
@@ -196,8 +254,16 @@
       <div class="stat"><div class="v">81.4%</div><div class="l">Exactitud (EMOVO, perfiles z-score)</div></div>
       <div class="stat"><div class="v">7</div><div class="l">Emociones evaluadas</div></div>
       <div class="stat"><div class="v">Pearson r</div><div class="l">Métrica de comparación de perfiles</div></div>
+    </div>
+    <div class="readout" id="readout"></div>
+    <p class="edit-note">Valores de ejemplo — edítalos en el bloque CORRELACIONES dentro del script al final del archivo.</p>
   </div>
 </section>
+
+<div class="modal" id="previewModal">
+  <span class="modal-close" id="closeBtn">&times;</span>
+  <img src="" alt="Vista ampliada" class="modal-content" id="modalImg">
+</div>
 
 <footer>
   <div class="wrap"><p>Reconocimiento de emociones en el espectro — proyecto final, Física Experimental 3, Universidad de Antioquia, 2026.</p></div>
@@ -224,15 +290,17 @@ const EMOCIONES_ITALIANO = [
   {id:'neutrale', es:'Neutral · Neutrale'}
 ];
 
-// CORRELACIONES: edita estos valores (0 a 1) con los r de Pearson reales por emoción
 const CORRELACIONES = {
   gioia: 0.78, tristezza: 0.84, rabbia: 0.71, paura: 0.75,
   disgusto: 0.69, sorpresa: 0.73, neutrale: 0.88
 };
 
 function shot(pathImg, tag, filename, labelBelow){
-  return `<div class="shot">
-      <img src="${pathImg}" alt="${filename}" onload="this.closest('.shot').classList.add('loaded')">
+  // Agregamos una segunda ruta alternativa por si el archivo está guardado en mayúsculas (.PNG)
+  const fallbackPath = pathImg.replace('.png', '.PNG');
+  
+  return `<div class="shot" onclick="openImage('${pathImg}', '${fallbackPath}')">
+      <img src="${pathImg}" alt="${filename}" onload="this.closest('.shot').classList.add('loaded')" onerror="this.src='${fallbackPath}'; this.onerror=null;">
       <div class="shot-fallback"><span class="tag">${tag}</span><span class="file">${filename}</span></div>
     </div>${labelBelow ? `<div class="shot-label">${labelBelow}</div>` : ''}`;
 }
@@ -244,7 +312,7 @@ function buildAleman(){
       <h3>${e.es}</h3>
       <p class="sub">img/aleman/${e.id}_*.png</p>
       <div class="shots">
-        ${shot(`img/aleman/${e.id}_paper.PNG`, 'pendiente', `${e.id}_paper.PNG`, 'Paper')}
+        ${shot(`img/aleman/${e.id}_paper.png`, 'pendiente', `${e.id}_paper.png`, 'Paper')}
         ${shot(`img/aleman/${e.id}_ours.png`, 'pendiente', `${e.id}_ours.png`, 'Nuestro')}
       </div>
     </div>
@@ -277,6 +345,38 @@ function buildReadout(){
     </div>`;
   }).join('');
 }
+
+// LÓGICA DE INTERACTIVIDAD DE LA PANTALLA GRANDE (MODAL)
+const modal = document.getElementById('previewModal');
+const modalImg = document.getElementById('modalImg');
+const closeBtn = document.getElementById('closeBtn');
+
+function openImage(src, fallback) {
+  modal.classList.add('open');
+  // Probamos cargar la imagen normal, si da error ponemos la de mayúsculas
+  modalImg.src = src;
+  modalImg.onerror = function() {
+    modalImg.src = fallback;
+    modalImg.onerror = null;
+  };
+}
+
+closeBtn.onclick = function() {
+  modal.classList.remove('open');
+}
+
+modal.onclick = function(e) {
+  if (e.target === modal) {
+    modal.classList.remove('open');
+  }
+}
+
+// Cerrar también con la tecla Escape
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    modal.classList.remove('open');
+  }
+});
 
 buildAleman();
 buildItaliano();
