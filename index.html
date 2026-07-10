@@ -9,16 +9,16 @@
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Serif:ital,wght@0,400;0,500;1,400&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --ink:#0B1220;
-    --panel:#131F30;
-    --panel-alt:#17263B;
-    --line:rgba(255,255,255,0.09);
-    --fog:#A9B4C4;
-    --paper:#EDF1F5;
-    --teal:#2DD4BF;
-    --teal-dim:#0F6E56;
-    --amber:#F0A85A;
-    --amber-dim:#854F0B;
+    --ink:#FFF5F7; /* Fondo principal rosa pastel muy suave */
+    --panel:#FFE4EB; /* Paneles rosa suave */
+    --panel-alt:#ffd5e0; /* Variación de panel un poco más intensa */
+    --line:rgba(212, 143, 161, 0.3); /* Líneas divisorias sutiles */
+    --fog:#6B5358; /* Texto secundario en tono café/rosa viejo oscuro */
+    --paper:#3A2428; /* Texto principal oscuro para buen contraste */
+    --teal:#D6336C; /* Acento principal: Rosa intenso/Fucsia elegante */
+    --teal-dim:#A61E4D;
+    --amber:#9C36B5; /* Acento secundario: Lila/Morado suave */
+    --amber-dim:#7048E8;
     --font-display:'Space Grotesk',sans-serif;
     --font-body:'IBM Plex Serif',serif;
     --font-mono:'JetBrains Mono',monospace;
@@ -39,30 +39,29 @@
 
   nav.top{
     position:sticky;top:0;z-index:50;
-    background:rgba(11,18,32,0.88);
+    background:rgba(255, 245, 247, 0.92);
     backdrop-filter:blur(6px);
     border-bottom:1px solid var(--line);
   }
-  nav.top .wrap{display:flex;align-items:center;justify-content:space-between;height:56px;}
-  nav.top .brand{font-weight:600;font-size:14px;letter-spacing:0.02em;color:var(--paper);text-decoration:none;}
+  nav.top .wrap{display:flex;align-items:center;justify-content:center;height:56px;}
   nav.top .links{display:flex;gap:22px;flex-wrap:wrap;}
-  nav.top .links a{font-size:13px;color:var(--fog);text-decoration:none;letter-spacing:0.02em;}
+  nav.top .links a{font-size:13px;color:var(--fog);text-decoration:none;letter-spacing:0.02em;font-weight: 500;}
   nav.top .links a:hover{color:var(--teal);}
 
   section{padding:88px 0;border-bottom:1px solid var(--line);}
   section:last-of-type{border-bottom:none;}
   .eyebrow{
     font-size:12px;letter-spacing:0.14em;text-transform:uppercase;
-    color:var(--amber);margin:0 0 14px;font-weight:500;
+    color:var(--amber);margin:0 0 14px;font-weight:600;
   }
-  h1{font-size:clamp(32px,5vw,52px);line-height:1.08;margin:0 0 20px;font-weight:600;}
-  h2{font-size:clamp(24px,3.4vw,32px);margin:0 0 14px;font-weight:600;}
+  h1{font-size:clamp(32px,5vw,52px);line-height:1.08;margin:0 0 20px;font-weight:700;color:var(--teal-dim);}
+  h2{font-size:clamp(24px,3.4vw,32px);margin:0 0 14px;font-weight:600;color:var(--paper);}
   p.lede{font-size:18px;color:var(--fog);max-width:640px;margin:0 0 8px;}
   p{margin:0 0 14px;}
 
   /* ---- hero ---- */
   #inicio{padding-top:64px;padding-bottom:56px;position:relative;overflow:hidden;}
-  .rings{position:absolute;right:-140px;top:50%;transform:translateY(-50%);width:620px;height:620px;opacity:0.55;pointer-events:none;}
+  .rings{position:absolute;right:-140px;top:50%;transform:translateY(-50%);width:620px;height:620px;opacity:0.4;pointer-events:none;}
   .rings circle{fill:none;stroke:var(--teal);}
   @media(prefers-reduced-motion:no-preference){
     .rings g{animation:spin 90s linear infinite;transform-origin:310px 310px;}
@@ -74,8 +73,8 @@
   /* ---- pipeline ---- */
   .pipeline{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:36px;}
   .pipe-step{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:18px 16px;position:relative;}
-  .pipe-step .n{font-family:var(--font-mono);font-size:12px;color:var(--teal);display:block;margin-bottom:8px;}
-  .pipe-step h3{font-size:15px;margin:0 0 6px;font-weight:500;color:var(--paper);}
+  .pipe-step .n{font-family:var(--font-mono);font-size:12px;color:var(--teal);display:block;margin-bottom:8px;font-weight: 700;}
+  .pipe-step h3{font-size:15px;margin:0 0 6px;font-weight:600;color:var(--paper);}
   .pipe-step p{font-size:13px;color:var(--fog);margin:0;}
   .pipe-step:not(:last-child)::after{
     content:'→';position:absolute;right:-16px;top:50%;transform:translateY(-50%);
@@ -86,15 +85,15 @@
   /* ---- comparison grid ---- */
   .grid-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:18px;margin-top:32px;}
   .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px;}
-  .card h3{font-size:16px;margin:0 0 4px;font-weight:500;}
-  .card .sub{font-size:12px;color:var(--fog);margin:0 0 14px;font-family:var(--font-mono);}
+  .card h3{font-size:16px;margin:0 0 4px;font-weight:600;color:var(--paper);}
+  .card .sub{font-size:11px;color:var(--fog);margin:0 0 14px;font-family:var(--font-mono);}
   .shots{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
   .shot{position:relative;aspect-ratio:4/3;background:var(--panel-alt);border:1px dashed var(--line);border-radius:8px;overflow:hidden;}
   .shot img{width:100%;height:100%;object-fit:contain;display:none;}
   .shot.loaded img{display:block;}
   .shot.loaded .shot-fallback{display:none;}
   .shot-fallback{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:8px;text-align:center;}
-  .shot-fallback span.tag{font-size:10px;letter-spacing:0.1em;color:var(--amber);text-transform:uppercase;}
+  .shot-fallback span.tag{font-size:10px;letter-spacing:0.1em;color:var(--amber);text-transform:uppercase;font-weight: 600;}
   .shot-fallback span.file{font-size:10px;color:var(--fog);word-break:break-all;}
   .shot-label{font-size:11px;color:var(--fog);margin-top:6px;text-align:center;font-family:var(--font-mono);}
 
@@ -111,18 +110,13 @@
   .stat .l{font-size:12px;color:var(--fog);margin-top:4px;}
   .readout{display:flex;flex-direction:column;gap:10px;}
   .readout-row{display:grid;grid-template-columns:140px 1fr 60px;align-items:center;gap:12px;}
-  .readout-row .name{font-size:13px;color:var(--fog);}
+  .readout-row .name{font-size:13px;color:var(--fog);font-weight: 500;}
   .readout-row .track{height:8px;background:var(--panel-alt);border-radius:4px;overflow:hidden;}
   .readout-row .fill{height:100%;background:var(--teal);}
   .readout-row .val{font-family:var(--font-mono);font-size:12px;color:var(--paper);text-align:right;}
   .edit-note{font-size:12px;color:var(--amber);margin-top:14px;}
 
-  /* ---- equipo ---- */
-  .team{display:flex;gap:14px;flex-wrap:wrap;margin-top:20px;}
-  .team .person{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px 18px;font-size:14px;}
-  .team .person .role{display:block;font-size:11px;color:var(--fog);margin-top:2px;font-family:var(--font-mono);}
-
-  footer{padding:36px 0;text-align:center;}
+  footer{padding:36px 0;text-align:center;border-top:1px solid var(--line);}
   footer p{font-size:12px;color:var(--fog);margin:0;}
 </style>
 </head>
@@ -130,13 +124,11 @@
 
 <nav class="top">
   <div class="wrap">
-    <a class="brand" href="#inicio">EMOCIÓN · ESPECTRO</a>
     <div class="links">
       <a href="#metodologia">Metodología</a>
       <a href="#aleman">Alemán vs. paper</a>
       <a href="#italiano">Italiano</a>
       <a href="#resultados">Resultados</a>
-      <a href="#equipo">Equipo</a>
     </div>
   </div>
 </nav>
@@ -205,7 +197,6 @@
       <div class="stat"><div class="v">7</div><div class="l">Emociones evaluadas</div></div>
       <div class="stat"><div class="v">Pearson r</div><div class="l">Métrica de comparación de perfiles</div></div>
     </div>
-    <h3 style="font-size:16px;font-weight:500;margin-bottom:16px;">Correlación promedio por emoción (EMOVO)</h3>
     <div class="readout" id="readout"></div>
     <p class="edit-note">Valores de ejemplo — edítalos en el bloque CORRELACIONES dentro del script al final del archivo.</p>
   </div>
