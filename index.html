@@ -82,14 +82,16 @@
   }
   @media(max-width:820px){.pipeline{grid-template-columns:1fr;}.pipe-step:not(:last-child)::after{display:none;}}
 
-  /* ---- comparison grid ---- */
+  /* ---- grid de tarjetas ---- */
   .grid-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:18px;margin-top:32px;}
   .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px;}
   .card h3{font-size:16px;margin:0 0 4px;font-weight:600;color:var(--paper);}
   .card .sub{font-size:11px;color:var(--fog);margin:0 0 14px;font-family:var(--font-mono);}
   
-  /* ---- NUEVOS ESTILOS PARA EFECTO HUNDIR ---- */
+  /* Contenedores de imágenes */
   .shots{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .shots.single{grid-template-columns:1fr;} /* Para que ocupe todo el ancho en italiano */
+
   .shot{
     position:relative;
     aspect-ratio:4/3;
@@ -104,7 +106,7 @@
     filter: brightness(0.95);
   }
   .shot:active {
-    transform: scale(0.95); /* Efecto de hundirse */
+    transform: scale(0.95);
   }
   .shot img{width:100%;height:100%;object-fit:contain;display:none;}
   .shot.loaded img{display:block;}
@@ -120,7 +122,7 @@
   .dot.teal{background:var(--teal);}
   .dot.amber{background:var(--amber);}
 
-  /* ---- resultados / readout ---- */
+  /* ---- resultados ---- */
   .stat-row{display:flex;gap:16px;flex-wrap:wrap;margin:28px 0 36px;}
   .stat{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px 20px;min-width:150px;}
   .stat .v{font-family:var(--font-mono);font-size:26px;color:var(--teal);font-weight:700;}
@@ -133,14 +135,14 @@
   .readout-row .val{font-family:var(--font-mono);font-size:12px;color:var(--paper);text-align:right;}
   .edit-note{font-size:12px;color:var(--amber);margin-top:14px;}
 
-  /* ---- NUEVOS ESTILOS PARA EL MODAL (PANTALLA GRANDE) ---- */
+  /* ---- MODAL (PANTALLA GRANDE) ---- */
   .modal {
     display: none;
     position: fixed;
     z-index: 1000;
     top: 0; left: 0;
     width: 100%; height: 100%;
-    background: rgba(58, 36, 40, 0.9); /* Fondo oscuro usando tu color café base */
+    background: rgba(58, 36, 40, 0.9); 
     backdrop-filter: blur(8px);
     align-items: center;
     justify-content: center;
@@ -241,7 +243,7 @@
   <div class="wrap">
     <p class="eyebrow">Resultado propio</p>
     <h2>Italiano (EMOVO) — obtenidos por nosotros</h2>
-    <p style="color:var(--fog);max-width:640px;">Para cada emoción del dataset EMOVO: el espectro FFT-2D binarizado y su perfil vertical normalizado (z-score) usado para la correlación.</p>
+    <p style="color:var(--fog);max-width:640px;">Para cada emoción del dataset EMOVO: el espectro FFT-2D binarizado y su perfil vertical integrado en una sola gráfica.</p>
     <div class="grid-cards" id="grid-italiano"></div>
   </div>
 </section>
@@ -296,9 +298,7 @@ const CORRELACIONES = {
 };
 
 function shot(pathImg, tag, filename, labelBelow){
-  // Agregamos una segunda ruta alternativa por si el archivo está guardado en mayúsculas (.PNG)
   const fallbackPath = pathImg.replace('.png', '.PNG');
-  
   return `<div class="shot" onclick="openImage('${pathImg}', '${fallbackPath}')">
       <img src="${pathImg}" alt="${filename}" onload="this.closest('.shot').classList.add('loaded')" onerror="this.src='${fallbackPath}'; this.onerror=null;">
       <div class="shot-fallback"><span class="tag">${tag}</span><span class="file">${filename}</span></div>
@@ -321,13 +321,13 @@ function buildAleman(){
 
 function buildItaliano(){
   const grid = document.getElementById('grid-italiano');
+  // Usamos la clase "shots single" para que la caja ocupe todo el ancho disponible
   grid.innerHTML = EMOCIONES_ITALIANO.map(e => `
     <div class="card">
       <h3>${e.es}</h3>
-      <p class="sub">img/italiano/${e.id}_*.png</p>
-      <div class="shots">
-        ${shot(`img/italiano/${e.id}_espectro.png`, 'pendiente', `${e.id}_espectro.png`, 'Espectro FFT-2D')}
-        ${shot(`img/italiano/${e.id}_perfil.png`, 'pendiente', `${e.id}_perfil.png`, 'Perfil z-score')}
+      <p class="sub">img/italiano/${e.id}_resultado.png</p>
+      <div class="shots single">
+        ${shot(`img/italiano/${e.id}_resultado.png`, 'pendiente', `${e.id}_resultado.png`, 'Espectro y Perfil (Nuestro)')}
       </div>
     </div>
   `).join('');
@@ -346,14 +346,13 @@ function buildReadout(){
   }).join('');
 }
 
-// LÓGICA DE INTERACTIVIDAD DE LA PANTALLA GRANDE (MODAL)
+// LÓGICA DEL MODAL
 const modal = document.getElementById('previewModal');
 const modalImg = document.getElementById('modalImg');
 const closeBtn = document.getElementById('closeBtn');
 
 function openImage(src, fallback) {
   modal.classList.add('open');
-  // Probamos cargar la imagen normal, si da error ponemos la de mayúsculas
   modalImg.src = src;
   modalImg.onerror = function() {
     modalImg.src = fallback;
@@ -371,7 +370,6 @@ modal.onclick = function(e) {
   }
 }
 
-// Cerrar también con la tecla Escape
 document.addEventListener('keydown', function(e) {
   if (e.key === 'Escape') {
     modal.classList.remove('open');
